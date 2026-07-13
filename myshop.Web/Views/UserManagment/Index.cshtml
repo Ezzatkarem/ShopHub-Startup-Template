@@ -1,0 +1,109 @@
+﻿@model IEnumerable<myshop.BLL.ViewModels.UserVM>
+
+@{
+    ViewData["Title"] = "Users";
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>User Management</h3>
+    </div>
+
+    <div class="card-body">
+
+        <table id="usersTable" class="table table-bordered table-striped">
+            <thead> 
+                <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th width="320">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.UserName</td>
+
+                        <td>@item.Email</td>
+
+                        <td>@item.Role</td>
+
+                        <td>
+                            @if (item.IsLocked)
+                            {
+                                <span class="badge bg-danger">Locked</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </td>
+
+                        <td>
+
+                            <a asp-action="ChangeRole"
+                               asp-route-id="@item.Id"
+                               class="btn btn-warning btn-sm">
+                                Change Role
+                            </a>
+
+                            @if (item.IsLocked)
+                            {
+                                <a asp-action="Unlock"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-success btn-sm">
+                                    Unlock
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="Lock"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-secondary btn-sm">
+                                    Lock
+                                </a>
+                            }
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this user?')">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $("#usersTable").DataTable({
+                pageLength: 10
+            });
+
+        });
+    </script>
+}
